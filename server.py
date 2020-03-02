@@ -45,7 +45,9 @@ def decrypt_message(client_message, session_key):
 # Encrypt a message using the session key
 def encrypt_message(message, session_key):
     # TODO: Implement this function
-    pass
+    iv = os.urandom(16)
+    obj = AES.new(session_key,AES.MODE_CBC,iv)
+    return iv + obj.encrypt(pad_message(message))
 
 
 # Receive 1024 bytes from the client
@@ -73,10 +75,10 @@ def verify_hash(user, password):
             line = line.split("\t")
             if line[0] == user:
                 # TODO: Generate the hashed password
-                salt = line[1]
+                salt = str(line[1])
                 hashed_password = hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 120000)
-                print(hashed_password)
-                return hashed_password == line[2]
+                print(line[2])
+                return str(hashed_password) == line[2]
         reader.close()
     except FileNotFoundError:
         return False
@@ -118,12 +120,12 @@ def main():
                 stuff = plain.split(" ")
 
                 if(verify_hash(stuff[0],stuff[1]) == True):
-                    print("all good")
+                    ciphertext_res = "Correct! Login Successful!"
                 else:
-                    print("boooo")
+                    ciphertext_res = "Incorrect wront info!"
             
                 # TODO: Encrypt response to client
-
+                ciphertext_response = encrypt_message(ciphertext_res,encrypted_key)
                 # Send encrypted response
                 send_message(connection, ciphertext_response)
             finally:
