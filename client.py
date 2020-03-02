@@ -103,6 +103,9 @@ def main():
         encmes = encrypt_message(message, encrypted_key)
         send_message(sock, encmes)
         # TODO: Receive and decrypt response from server
+        ciphertext_message = receive_message(sock)
+        plain = decrypt_message(ciphertext_message,encrypted_key)
+        print(plain)
     finally:
         print('closing socket')
         sock.close()
