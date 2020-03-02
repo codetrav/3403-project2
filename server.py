@@ -77,7 +77,6 @@ def verify_hash(user, password):
                 # TODO: Generate the hashed password
                 salt = str(line[1])
                 hashed_password = hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 120000)
-                print(line[2])
                 return str(hashed_password) == line[2]
         reader.close()
     except FileNotFoundError:
@@ -110,22 +109,20 @@ def main():
 
                 # Decrypt key from client
                 plaintext_key = decrypt_key(encrypted_key)
-
                 # Receive encrypted message from client
                 ciphertext_message = receive_message(connection)
 
                 # TODO: Decrypt message from client
-                plain = decrypt_message(ciphertext_message,encrypted_key)
+                plain = decrypt_message(ciphertext_message,plaintext_key)
                 # TODO: Split responsqe from user into the username and password
                 stuff = plain.split(" ")
 
                 if(verify_hash(stuff[0],stuff[1]) == True):
                     ciphertext_res = "Correct! Login Successful!"
                 else:
-                    ciphertext_res = "Incorrect wront info!"
-            
+                    ciphertext_res = "Incorrect wront info!"    
                 # TODO: Encrypt response to client
-                ciphertext_response = encrypt_message(ciphertext_res,encrypted_key)
+                ciphertext_response = encrypt_message(ciphertext_res,plaintext_key)
                 # Send encrypted response
                 send_message(connection, ciphertext_response)
             finally:

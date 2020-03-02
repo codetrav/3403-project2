@@ -87,7 +87,7 @@ def main():
 
         # Generate random AES key
         key = generate_key()
-
+        print(key)
         # Encrypt the session key using server's public key
         encrypted_key = encrypt_handshake(key)
 
@@ -100,11 +100,11 @@ def main():
             exit(0)
 
         # TODO: Encrypt message and send to server
-        encmes = encrypt_message(message, encrypted_key)
+        encmes = encrypt_message(message, key)
         send_message(sock, encmes)
         # TODO: Receive and decrypt response from server
         ciphertext_message = receive_message(sock)
-        plain = decrypt_message(ciphertext_message,encrypted_key)
+        plain = decrypt_message(ciphertext_message, key)
         print(plain)
     finally:
         print('closing socket')

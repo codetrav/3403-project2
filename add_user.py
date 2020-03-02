@@ -14,7 +14,6 @@ password = input("Enter a password: ")
 
 # hashlib reccomends salt be al least size 16
 salt = str(os.urandom(16));
-print(salt)
 # use sha1 algorithm in hashlib to hash password
 hashed= hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 120000)
 hashed_password = hashed
